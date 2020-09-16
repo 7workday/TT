@@ -36,6 +36,7 @@ class User(models.Model):
 
 
 class Profile(models.Model):
+    '''个人的配置及交友资料'''
     dating_gender = models.CharField(max_length=10, default='male', choices=User.GENDERS,
                                      verbose_name='匹配的性别')
     dation_location = models.CharField(max_length=20, default='北京', choices=User.LOCATION,
@@ -45,7 +46,7 @@ class Profile(models.Model):
     min_dating_age = models.IntegerField(default=18, verbose_name='最⼩交友年龄')
     max_dating_age = models.IntegerField(default=50, verbose_name='最⼤交友年龄')
     vibration = models.BooleanField(verbose_name='开启震动')
-    only_matche = models.BooleanField(verbose_name='不让为匹配的⼈看我的相册')
+    only_matched = models.BooleanField(verbose_name='不让为匹配的⼈看我的相册')
     auto_play = models.BooleanField(verbose_name='⾃动播放视频')
 
     def to_dict(self):
@@ -58,7 +59,7 @@ class Profile(models.Model):
             'min_dating_age': self.min_dating_age,
             'max_dating_age': self.max_dating_age,
             'vibration': self.vibration,
-            'only_matche': self.only_matche,
+            'only_matched': self.only_matched,
             'auto_play': self.auto_play,
 
         }
