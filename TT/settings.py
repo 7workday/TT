@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
+#自定义模块
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -49,7 +51,9 @@ ROOT_URLCONF = 'TT.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, "static")
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
