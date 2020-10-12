@@ -5,6 +5,7 @@ import datetime
 from user.models import User
 from user.models import Profile
 from social.models import Swiped
+from social.models import Friend
 
 
 def rcmd(uid, num):
@@ -34,6 +35,17 @@ def like_someone(uid, sid):
     # 添加一条滑动记录
     Swiped.swiper(uid,sid,'like')
 
+    # 检查是否对方是否右滑或上滑过自己
+    if Swiped.has_liked(sid, uid):
+        # 匹配成好友关系
+        Friend.make_friends(uid, sid)
+        return True
+    else:
+        return False
+
+
+def superlike_someone():
+    pass
 
 
 

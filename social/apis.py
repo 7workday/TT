@@ -1,6 +1,9 @@
 from common import stat
 from libs.http import render_json
 from social import logics
+from social.models import Friend
+from user.models import User
+
 
 def rcmd_users(request):
     '''推荐用户'''
@@ -12,8 +15,8 @@ def rcmd_users(request):
 def like(request):
     '''右滑：喜欢'''
     sid = int(request.POST.get('sid'))
-    result = logics.like_someone(request.uid.sid)
-    return render_json(result)
+    is_matched = logics.like_someone(request.uid.sid)
+    return render_json({'is_matched': is_matched})
 
 
 def superlike(request):
@@ -24,5 +27,3 @@ def superlike(request):
 def dislike(request):
     '''左滑：不喜欢'''
     sid = int(request.POST.get('sid'))
-
-
