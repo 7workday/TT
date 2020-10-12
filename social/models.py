@@ -25,3 +25,4 @@ class Friend(models.Model):
     class Meta:
         unique_together = ('uid1', 'uid2')  # uid1 与 uid2 联合唯一
 
+
