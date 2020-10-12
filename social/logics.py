@@ -19,13 +19,18 @@ def rcmd(uid, num):
     earliest_birthday = today - datetime.timedelta(profile.max_dating_age * 365)  # 最早出生日期
     latest_birthday = today - datetime.timedelta(profile.min_dating_age * 365)  # 最晚出生日期
 
+    # 取出滑过的所有的用户 ID
+    # select sid from swiped where uid=1;
+    sid_list = list(Swiped.objects.filter(uid=uid).values_list('sid', flat=True))
+    sid_list += [uid]  # 防止自身被筛选出来
+
     # 根据条件匹配要推荐的用户
     users = User.objects.filter(
         gender=profile.dating_gender,
         location=profile.dating_location,
         birthday__gte=earliest_birthday,
         birthday__lte=latest_birthday
-    )[:30]
+    ).exclude(id__in = sid_list)[:30]
 
     return users
 
