@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.core.cache import cache
 
+from libs.http import render_json
 from user.models import User
 from user.models import Profile
 from user.forms import UserForm
@@ -14,9 +15,9 @@ def get_vcode(request):
     phonenum = request.GET.get('phonenum')
     success = logics.send_sms(phonenum)
     if success:
-        return JsonResponse({'code': stat.OK, 'data': None})
+        return render_json()
     else:
-        return JsonResponse({'code': stat.SMS_ERR, 'data': None})
+        return render_json(None, code=stat.SMS_ERR)
 
 
 def submit_vcode(request):
@@ -34,15 +35,15 @@ def submit_vcode(request):
 
         # 记录用户登陆状态
         request.session['uid'] = user.id
-        return JsonResponse({'code': stat.OK, 'data': user.to_dict()})
+        return render_json(user.to_dict(), code=stat.OK)
     else:
-        return JsonResponse({'code': stat.VCODE_ERR, 'data': None})
+        return render_json(None, code=stat.VCODE_ERR)
 
 
 def get_profile(request):
     '''获取用户配置'''
     profile, _ = Profile.objects.get_or_create(id=request.uid)
-    return JsonResponse({'code': stat.OK, 'data': profile.to_dict()})
+    return render_json(profile.to_dict(), code=stat.OK)
 
 
 def set_profile(request):
@@ -50,21 +51,23 @@ def set_profile(request):
     user_form = UserForm(request.POST)
     profile_form = ProfileForm(request.POST)
 
-    #验证user表单数据
+    # 验证user表单数据
     if not user_form.is_valid():
-        return JsonResponse({'code': stat.USER_FORM_ERR, 'data':user_form.errors})
+        return render_json(user_form.errors, code=stat.USER_FORM_ERR)
     # 验证profile表单数据
     if not profile_form.is_valid():
-        return JsonResponse({'code': stat.PROFILE_FORM_ERR, 'data': user_form.errors})
+        return render_json(profile_form
+
+                           .errors, code=stat.PROFILE_FORM_ERR)
 
     # 验修改用户数据
     # update user set nickname='xx', gender='male' where id=uid;
     User.objects.filetr(id=request.uid).update(**user_form.cleaned_data)
 
     # 修改 profile 数据
-    Profile.objects.update_or_create(id=request.uid,defaults=profile_form.cleaned_data)
+    Profile.objects.update_or_create(id=request.uid, defaults=profile_form.cleaned_data)
 
-    return JsonResponse({'code':stat.OK,'data':None})
+    return render_json()
 
 
 def upload_avatar(request):
