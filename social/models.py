@@ -1,4 +1,6 @@
 from django.db import models
+from sqlite3 import IntegrityError
+from common import stat
 
 
 class Swiped(models.Model):
@@ -16,6 +18,14 @@ class Swiped(models.Model):
     class Meta:
         unique_together = ('uid', 'sid')  # uid 与 sid 联合唯一
 
+    @classmethod
+    def swiper(cls,self, uid, sid, styple):
+        '''执行一次滑动'''
+        try:
+            cls.objects.create(uid=uid, sid=sid, style='like')
+        except IntegrityError :
+            raise stat.RepeatSwipeErr
+
 
 class Friend(models.Model):
     '''好友表'''
@@ -24,5 +34,4 @@ class Friend(models.Model):
 
     class Meta:
         unique_together = ('uid1', 'uid2')  # uid1 与 uid2 联合唯一
-
 

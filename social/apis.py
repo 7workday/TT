@@ -1,12 +1,28 @@
-from django.http import JsonResponse
-
 from common import stat
+from libs.http import render_json
 from social import logics
 
 def rcmd_users(request):
     '''推荐用户'''
-    user = logics.rcmd(request.uid)
+    users = logics.rcmd(request.uid)
     result = [user.to_dict() for user in users]
-    return JsonResponse({'code':stat.ok,'data':user})
+    return render_json(result)
+
+
+def like(request):
+    '''右滑：喜欢'''
+    sid = int(request.POST.get('sid'))
+    result = logics.like_someone(request.uid.sid)
+    return render_json(result)
+
+
+def superlike(request):
+    '''上滑：超级喜欢'''
+    sid = int(request.POST.get('sid'))
+
+
+def dislike(request):
+    '''左滑：不喜欢'''
+    sid = int(request.POST.get('sid'))
 
 
