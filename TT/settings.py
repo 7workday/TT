@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'a9+wd%-e&6_0h99_l=dbxrhxu4r6qr3vp_huo=ew(g+=9m*=o4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -34,6 +34,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
+#自定义模块
+    'user',
+    'social'
 ]
 
 MIDDLEWARE = [
@@ -42,6 +45,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'common.middleware.AuthMiddleware',
+    'common.middleware.LogicErrMiddleware',
 ]
 
 ROOT_URLCONF = 'TT.urls'
@@ -49,7 +55,9 @@ ROOT_URLCONF = 'TT.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, "static")
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -69,7 +77,7 @@ WSGI_APPLICATION = 'TT.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'TT',
+        'NAME': 'tt',
         'HOST': '127.0.0.1',
         'POST': '3306',
         'USER': 'swiper',
