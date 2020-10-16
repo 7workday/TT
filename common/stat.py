@@ -23,3 +23,5 @@ UserFormErr = gen_logic_err('UserFormErr', 1003)        # 用户表单数据错�
 ProfileFormErr = gen_logic_err('ProfileFormErr', 1004)  # 用户资料表单错误
 RepeatSwipeErr = gen_logic_err('RepeatSwipeErr', 1005)  # 重复滑动的错误
 AreadyFriends = gen_logic_err('AreadyFriends',1006)     # 重复好友
+RewindLimited = gen_logic_err('RewindLimited',1007)     #当天反悔次数达到上线
+RewindTimeout = gen_logic_err('RewindTimeout',1008)   #反悔超时
