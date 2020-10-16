@@ -23,6 +23,9 @@ class User(models.Model):
     avatar = models.CharField(max_length=256, verbose_name='个人形象')
     location = models.CharField(max_length=20, default='北京', choices=LOCATION, verbose_name='常居地')
 
+    def __str__(self):
+        return str(self.id)
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -39,7 +42,7 @@ class Profile(models.Model):
     '''个人的配置及交友资料'''
     dating_gender = models.CharField(max_length=10, default='male', choices=User.GENDERS,
                                      verbose_name='匹配的性别')
-    dation_location = models.CharField(max_length=20, default='北京', choices=User.LOCATION,
+    dating_location = models.CharField(max_length=20, default='北京', choices=User.LOCATION,
                                    verbose_name='⽬标城市')
     min_distance = models.IntegerField(default=1, verbose_name='最⼩查找范围')
     max_distance = models.IntegerField(default=10, verbose_name='最⼤查找范围')
@@ -53,7 +56,7 @@ class Profile(models.Model):
         return {
             'id': self.id,
             'dating_gender': self.dating_gender,
-            'dation_location': self.dation_location,
+            'dating_location': self.dating_location,
             'min_distance': self.min_distance,
             'max_distance': self.max_distance,
             'min_dating_age': self.min_dating_age,

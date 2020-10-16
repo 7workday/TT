@@ -2,7 +2,7 @@ import random
 
 import requests
 from django.core.cache import cache
-
+from common import keys
 from TT import conf
 
 
@@ -16,7 +16,7 @@ def gen_rand_code(length=6):
 
 def send_sms(mobile):
     '''发送短信验证码'''
-    key = 'Vcode-%s' % mobile
+    key = keys.VCODE_K % mobile
 
     # 检查短信发送状态，防止短时间内给用户重复发送短信
     if cache.get(key):
