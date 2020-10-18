@@ -30,12 +30,14 @@
     Web App (Django / Flask / Tornado)
 '''
 
+import logging
 from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 
 from libs.http import render_json
 from common import stat
 
+err_log = logging.getLogger(err)
 
 class AuthMiddleware(MiddlewareMixin):
     '''登陆检查中间件'''
@@ -59,4 +61,5 @@ class AuthMiddleware(MiddlewareMixin):
 class LogicErrMiddleware(MiddlewareMixin):
     def process_exception(self, request, exception):
         if isinstance(exception, stat.LogicErr):
+            err_log.error(f'Code:{exception.code} Data:{exception.code}')
             return render_json(exception.data, code=exception.code)
