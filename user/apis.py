@@ -1,7 +1,10 @@
+import logging
+
+from libs.cache import rds
+from libs.http import render_json
 from django.http import JsonResponse
 from django.core.cache import cache
 
-from libs.http import render_json
 from user.models import User
 from user.models import Profile
 from user.forms import UserForm
@@ -9,6 +12,8 @@ from user.forms import ProfileForm
 from user import logics
 from common import stat
 from common import keys
+
+inf_log = logging.getLogger('inf')
 
 
 def get_vcode(request):
@@ -31,8 +36,10 @@ def submit_vcode(request):
     if vcode and vcode == cached_vcode:
         try:
             user = User.objects.get(phonenum=phonenum)  # 获取用户
+            inf_log.info(f'User({user.id}:{user.nickname}) login')
         except User.DoesNotExist:
             user = User.objects.create(phonenum=phonenum, nickname=phonenum)  # 创建新用户
+            inf_log.info(f'User({user.id}:{user.nickname}) register')
 
         # 记录用户登陆状态
         request.session['uid'] = user.id
@@ -43,8 +50,12 @@ def submit_vcode(request):
 
 def get_profile(request):
     '''获取用户配置'''
-    profile, _ = Profile.objects.get_or_create(id=request.uid)
-    return render_json(profile.to_dict(), code=stat.OK)
+    key = keys.MODEL_K % (Profile.__name__, request.uid)
+    profile = rds.get(key)  # 先从缓存获取数据
+    if profile is None:
+        profile, _ = Profile.objects.get_or_create(id=request.uid)  # 缓存中没有，直接从数据库获取
+        rds.set(key, profile)  # 将 profile 存入缓存
+    return render_json(profile.to_dict())
 
 
 def set_profile(request):
@@ -65,6 +76,10 @@ def set_profile(request):
 
     # 修改 profile 数据
     Profile.objects.update_or_create(id=request.uid, defaults=profile_form.cleaned_data)
+
+    # 更新缓存
+    key = keys.MODEL_K % (Profile.__name__, request.uid)
+    rds.delete(key)
 
     return render_json()
 
